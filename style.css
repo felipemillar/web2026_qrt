@@ -1,1 +1,24 @@
-/* El estilo del sitio se gestiona en su totalidad mediante Tailwind CSS en index.html */
+/* El estilo del sitio se gestiona en su totalidad mediante Tailwind CSS y estos estilos personalizados */
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #030712;
+}
+h1, h2 {
+    font-family: 'Outfit', sans-serif;
+}
+#logo-img {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    will-change: transform;
+}
+
+/* Floating background highlight orbs */
+@keyframes float {
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-12px) rotate(180deg); }
+    100% { transform: translateY(0px) rotate(360deg); }
+}
+.animate-float-slow {
+    animation: float 25s infinite ease-in-out;
+}
