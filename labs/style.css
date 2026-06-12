@@ -1,0 +1,91 @@
+/* ==========================================================================
+   QRT SOLUTIONS LABS v2.0 - CUSTOM STYLES
+   ========================================================================== */
+
+:root {
+    --color-bg: #03060e;
+    --color-text-main: #f3f4f6;
+    --color-text-muted: #9ca3af;
+    --color-border: #111827;
+    --color-accent-cyan: #06b6d4;
+    --color-accent-emerald: #10b981;
+    --color-accent-red: #ef4444;
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text-main);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.011em;
+}
+
+/* Custom Grid Panel styling mimicking Bloomberg Terminal / Quant HUD */
+.hud-panel {
+    background: rgba(4, 7, 18, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hud-panel:hover {
+    border-color: rgba(6, 182, 212, 0.2);
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.02);
+}
+
+/* Price ticker animations */
+.ticker-up {
+    color: var(--color-accent-emerald);
+    animation: flash-green 0.5s ease-out;
+}
+
+.ticker-down {
+    color: var(--color-accent-red);
+    animation: flash-red 0.5s ease-out;
+}
+
+@keyframes flash-green {
+    0% { background-color: rgba(16, 185, 129, 0.15); }
+    100% { background-color: transparent; }
+}
+
+@keyframes flash-red {
+    0% { background-color: rgba(239, 68, 68, 0.15); }
+    100% { background-color: transparent; }
+}
+
+/* Custom scrollbars for data panels */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #1f2937;
+    border-radius: 2px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #374151;
+}
+
+/* Matrix scanning line simulation for the quant dashboard background */
+.scanline {
+    background: linear-gradient(
+        to bottom,
+        rgba(255,255,255,0),
+        rgba(6, 182, 212, 0.02) 50%,
+        rgba(255,255,255,0)
+    );
+    animation: scan 6s linear infinite;
+}
+
+@keyframes scan {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+}

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QRT Solutions — Marco Estratégico de Capacidades v2.0</title>
+    
+    <!-- Google Fonts: Outfit (Heading), Inter (Body), Roboto Mono (Tech Meta) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@200;300;400;500;600&family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        qrt: {
+                            dark: '#0f172a',
+                            light: '#ffffff',
+                            neutral: '#f9fafb',
+                            gray: '#4b5563',
+                            border: '#e5e7eb'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                        mono: ['Roboto Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            background-color: #ffffff;
+            color: #111827;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            letter-spacing: -0.011em;
+        }
+        
+        h1, h2, h3 {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        .code-meta {
+            font-family: 'Roboto Mono', monospace;
+            letter-spacing: 0.05em;
+        }
+
+        /* Border accent hover effect */
+        .hover-border-trigger {
+            border-left: 1px solid #e5e7eb;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .hover-border-trigger:hover {
+            border-left-color: #111827;
+            padding-left: 28px;
+        }
+
+        /* Custom Bullet List */
+        .validation-item::before {
+            content: "→";
+            font-family: 'Roboto Mono', monospace;
+            color: #6b7280;
+            margin-right: 12px;
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between py-16 px-6 sm:px-8 md:px-16 max-w-5xl mx-auto selection:bg-gray-100 selection:text-black">
+
+    <!-- Header Section (Ultra-minimalist, logo only, no borders or extra tags) -->
+    <header class="pb-12 mb-8 w-full">
+        <!-- Logo with CSS Invert filter -->
+        <img src="assets/logo-blanco.png" alt="QRT Solutions" class="h-6 w-auto object-contain invert opacity-90">
+    </header>
+
+    <!-- Main Content Document -->
+    <main class="space-y-20 flex-grow">
+        
+        <!-- Document Title Block -->
+        <div class="space-y-6 max-w-3xl">
+            <div class="code-meta text-[9px] font-semibold text-gray-400 uppercase tracking-[0.25em]">
+                // THESIS OPERATIONAL v2.0
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-light text-gray-900 leading-tight">
+                Marco Estratégico de Capacidades
+            </h1>
+            
+            <div class="space-y-6 pt-4 text-gray-600 text-sm sm:text-[15px] leading-relaxed text-justify">
+                <p>
+                    La evolución de QRT Solutions hacia su versión 2.0 se fundamenta en una premisa operativa única en el mercado latinoamericano: <strong class="text-gray-900 font-medium">la transferencia de la disciplina del trading cuantitativo hacia entornos de alta complejidad institucional y corporativa.</strong>
+                </p>
+                <p>
+                    No operamos como una consultora de software tradicional, sino como un laboratorio agnóstico al dato. Nuestra ventaja competitiva radica en la capacidad de procesar flujos masivos de información bajo condiciones críticas de rendimiento y traducir ese caos en retornos de negocio tangibles. Esta capacidad se despliega a través de dos pilares estratégicos mutuamente respaldados.
+                </p>
+            </div>
+        </div>
+
+        <!-- Pillar 1 Section -->
+        <section class="space-y-6 hover-border-trigger pl-6 sm:pl-8">
+            <div class="space-y-2">
+                <div class="code-meta text-[9px] font-semibold text-gray-400 uppercase tracking-widest">
+                    Pilar 01 / INFRAESTRUCTURA Y MERCADO REGULADO
+                </div>
+                <h2 class="text-2xl font-normal text-gray-900 tracking-tight">
+                    Quantitative & Infrastructure Financial Solutions
+                </h2>
+            </div>
+            
+            <p class="text-gray-600 text-sm sm:text-[15px] leading-relaxed text-justify max-w-4xl">
+                Este pilar representa el estándar de máxima exigencia técnica de la compañía. Se define por operar en entornos donde el tiempo se mide en fracciones de segundo, el cumplimiento normativo es absoluto y la tolerancia al fallo es inexistente. Es la línea encargada de diseñar y sostener las estructuras medulares sobre las que transitan los mercados de capitales y los flujos financieros globales.
+            </p>
+
+            <!-- Validation Box 1 (Minimalist Light Grid) -->
+            <div class="bg-gray-50 border border-gray-100 rounded-lg p-6 max-w-4xl space-y-4 shadow-sm">
+                <h4 class="code-meta text-[9px] uppercase tracking-widest text-gray-400 font-semibold">
+                    Tesis de Validación (Tracción Consolidada)
+                </h4>
+                <ul class="space-y-3 font-sans text-sm text-gray-700">
+                    <li class="validation-item flex items-start">
+                        <span>Co-creación y despliegue de infraestructura tecnológica crítica directamente con entidades reguladas de la escala de la <strong class="text-gray-900 font-medium">Bolsa Electrónica de Chile</strong>.</span>
+                    </li>
+                    <li class="validation-item flex items-start">
+                        <span>Diseño y optimización de motores de datos y flujos analíticos de alto rendimiento para brokers globales con procesamiento transaccional masivo, como <strong class="text-gray-900 font-medium">Pepperstone</strong>.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <p class="text-gray-600 text-sm sm:text-[15px] leading-relaxed text-justify max-w-4xl">
+                La ejecución exitosa en este ecosistema dota a QRT de una credencial de autoridad única. Si nuestra arquitectura de sistemas posee la robustez, velocidad y seguridad necesarias para gestionar los riesgos y la liquidez del mercado financiero regulado en tiempo real, está automáticamente calificada para absorber cualquier desafío tecnológico de menor rigor latente.
+            </p>
+        </section>
+
+        <!-- Pillar 2 Section -->
+        <section class="space-y-6 hover-border-trigger pl-6 sm:pl-8">
+            <div class="space-y-2">
+                <div class="code-meta text-[9px] font-semibold text-gray-400 uppercase tracking-widest">
+                    Pilar 02 / CIENCIA DE DATOS Y OPTIMIZACIÓN CORPORATIVA
+                </div>
+                <h2 class="text-2xl font-normal text-gray-900 tracking-tight">
+                    Advanced Analytics & Operational Optimization
+                </h2>
+            </div>
+            
+            <p class="text-gray-600 text-sm sm:text-[15px] leading-relaxed text-justify max-w-4xl">
+                Este pilar es la máxima expresión de nuestro agnosticismo al dato. Consiste en extraer los modelos matemáticos complejos y el rigor analítico desarrollados en el mundo financiero, y exportarlos hacia corporaciones líderes de la economía real. Su objetivo es descomponer la incertidumbre de variables operacionales complejas para optimizar la toma de decisiones estratégicas a gran escala.
+            </p>
+
+            <!-- Validation Box 2 (Minimalist Light Grid) -->
+            <div class="bg-gray-50 border border-gray-100 rounded-lg p-6 max-w-4xl space-y-4 shadow-sm">
+                <h4 class="code-meta text-[9px] uppercase tracking-widest text-gray-400 font-semibold">
+                    Tesis de Validación (Tracción Consolidada)
+                </h4>
+                <ul class="space-y-3 font-sans text-sm text-gray-700">
+                    <li class="validation-item flex items-start">
+                        <span>Optimización y predicción de variables operacionales complejas en el sector de recursos naturales para la gran minería con <strong class="text-gray-900 font-medium">BHP</strong>.</span>
+                    </li>
+                    <li class="validation-item flex items-start">
+                        <span>Diseño de soluciones analíticas de alto impacto para infraestructura de conectividad y telecomunicaciones con <strong class="text-gray-900 font-medium">Sixbell</strong>.</span>
+                    </li>
+                    <li class="validation-item flex items-start">
+                        <span>Modelación estadística del comportamiento de consumo masivo y analítica a gran escala en colaboración con transnacionales como <strong class="text-gray-900 font-medium">Cheil</strong>.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <p class="text-gray-600 text-sm sm:text-[15px] leading-relaxed text-justify max-w-4xl">
+                Este pilar demuestra que el motor matemático de QRT no depende de una industria en particular. Al enfrentar datos heterogéneos (sean leyes de mineral, tráfico de redes o patrones de consumo), nuestra metodología aisla el ruido de forma eficiente y entrega certidumbre. El resultado no es "más datos", sino un incremento directo en la eficiencia operacional y los retornos financieros del cliente.
+            </p>
+        </section>
+
+        <!-- Portfolio Synergy (Editorial style card) -->
+        <div class="border-t-2 border-gray-900 pt-8 max-w-4xl space-y-6">
+            <h3 class="text-sm font-semibold uppercase tracking-wider text-gray-950">
+                Sinergia de Portafolio
+            </h3>
+            <p class="text-gray-600 text-sm sm:text-[15px] leading-relaxed text-justify font-light">
+                La coexistencia de ambos pilares crea un foso defensivo imbatible para QRT Solutions: El <strong class="text-gray-900 font-medium">Pilar 1</strong> nos otorga el prestigio, el volumen técnico y la reputación de ser una de las pocas firmas capaces de operar bajo el estándar de instituciones reguladas del mercado de capitales. El <strong class="text-gray-900 font-medium">Pilar 2</strong> capitaliza esa reputación para expandir nuestra capacidad hacia mercados corporativos masivos, demostrando que nuestra ingeniería matemática es un activo líquido capaz de optimizar cualquier negocio en Latinoamérica.
+            </p>
+            <div class="pt-2 text-right">
+                <p class="text-gray-950 font-heading text-lg sm:text-xl italic font-light tracking-wide inline-block border-b border-gray-200 pb-1">
+                    "No vendemos software; vendemos la arquitectura detrás de las decisiones complejas."
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer (Ultra-minimalist, sutil copyright only) -->
+    <footer class="mt-20 pt-8 border-t border-gray-100 text-[10px] text-gray-400 code-meta uppercase tracking-wider text-center w-full">
+        <div>&copy; 2026 QRT Solutions</div>
+    </footer>
+
+</body>
+</html>
