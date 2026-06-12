@@ -5,23 +5,41 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // ==========================================================================
-    // 1. MACOS-STYLE DYNAMIC WAVES ENGINE
+    // 1. MACOS-STYLE DYNAMIC WAVES ENGINE WITH 3D DEPTH & RETINA HD SCALING
     // ==========================================================================
     const canvas = document.getElementById('particles-canvas');
     if (canvas) {
         const ctx = canvas.getContext('2d');
         let waves = [];
 
+        // Logical layout dimensions (CSS pixels)
+        let logicalWidth = window.innerWidth;
+        let logicalHeight = window.innerHeight;
+
         function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            const dpr = window.devicePixelRatio || 1;
+            logicalWidth = window.innerWidth;
+            logicalHeight = window.innerHeight;
+            
+            // Scale physical canvas pixels for high-density (Retina/4K) displays
+            canvas.width = logicalWidth * dpr;
+            canvas.height = logicalHeight * dpr;
+            
+            // Constrain visual size using CSS
+            canvas.style.width = logicalWidth + 'px';
+            canvas.style.height = logicalHeight + 'px';
+            
+            // Normalize coordinate system and scale context
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.scale(dpr, dpr);
+            
             initWaves();
         }
 
         // Create a new randomized wave crossing the screen at horizontal, vertical, or diagonal angles
         function createRandomWave(onScreenInit = false) {
-            const w = canvas.width;
-            const h = canvas.height;
+            const w = logicalWidth;
+            const h = logicalHeight;
             const R = Math.sqrt(w * w + h * h) / 2;
             
             // 3D Depth Factor: z ranges from 0.15 (deep background) to 1.0 (foreground)
@@ -113,8 +131,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Draw a single wave layer at its specific rotation, translation, and morphing state
         function drawWave(wave) {
-            const w = canvas.width;
-            const h = canvas.height;
+            const w = logicalWidth;
+            const h = logicalHeight;
             const cosT = Math.cos(wave.angle);
             const sinT = Math.sin(wave.angle);
             
@@ -193,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.fillStyle = gradient;
             ctx.fill();
 
-            // 5. Draw top ridge stroke
+            // 5. Draw top ridge stroke with high-definition linear gradient
             ctx.beginPath();
             let first = true;
             for (let u = -L; u <= L; u += step) {
@@ -211,7 +229,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     ctx.lineTo(gx, gy);
                 }
             }
-            ctx.strokeStyle = `rgba(${wave.colorRgb}, ${finalOpacity * 0.85})`;
+            
+            // Create a stroke gradient across the screen to fade edges beautifully
+            const strokeGradient = ctx.createLinearGradient(0, 0, w, h);
+            strokeGradient.addColorStop(0, `rgba(${wave.colorRgb}, ${finalOpacity * 0.15})`);
+            strokeGradient.addColorStop(0.5, `rgba(${wave.colorRgb}, ${finalOpacity * 0.85})`);
+            strokeGradient.addColorStop(1, `rgba(${wave.colorRgb}, ${finalOpacity * 0.15})`);
+            
+            ctx.strokeStyle = strokeGradient;
             ctx.lineWidth = wave.lineWidth;
             ctx.stroke();
 
@@ -224,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Animation Loop with Z-Sorting lifecycle management
         function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.clearRect(0, 0, logicalWidth, logicalHeight);
             
             // Set screen blend mode for glowing overlays
             ctx.globalCompositeOperation = 'screen';
