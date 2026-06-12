@@ -24,7 +24,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const h = canvas.height;
             const R = Math.sqrt(w * w + h * h) / 2;
             
-            // Choose a random angle (0 = horizontal, PI/2 = vertical, PI/4 = diagonal, etc.)
+            // 3D Depth Factor: z ranges from 0.15 (deep background) to 1.0 (foreground)
+            const z = 0.15 + Math.random() * 0.85;
+            
+            // Choose a random angle
             const angles = [
                 0,                  // Horizontal (moving down/up)
                 Math.PI,            // Horizontal opposite
@@ -41,8 +44,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const dStart = -R - 180;
             const dEnd = R + 180;
             
-            // Slide speed (pixels per frame)
-            const speedD = (0.2 + Math.random() * 0.45) * (Math.random() < 0.5 ? 1 : -1);
+            // Slide speed: scale with depth (z) so distant waves move slower
+            const baseSpeed = 0.2 + Math.random() * 0.45;
+            const speedD = baseSpeed * z * (Math.random() < 0.5 ? 1 : -1);
             
             // Starting position: distribute randomly if initial build, otherwise place off-screen
             let d;
@@ -52,10 +56,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 d = speedD > 0 ? dStart : dEnd;
             }
             
-            // Wave parameters (large sweeping curves, no micro-undulations)
-            const baseAmplitude1 = 35 + Math.random() * 15;  // 35 to 50px amplitude
-            const baseAmplitude2 = 2 + Math.random() * 2;    // 2 to 4px secondary
-            const baseAmplitude3 = 0;                        // disabled to remove micro-undulations
+            // Wave amplitudes scale with depth (z) to make background waves flatter
+            const baseAmplitude1 = (15 + z * 35) + Math.random() * 10; // 15px (back) up to 60px (front)
+            const baseAmplitude2 = (1 + z * 3);                        // secondary micro-curves
             
             // Select one of the corporate pastel colors
             const colors = [
@@ -69,7 +72,14 @@ document.addEventListener('DOMContentLoaded', () => {
             ];
             const color = colors[Math.floor(Math.random() * colors.length)];
             
+            // Opacity scales with depth (z): background is faint, foreground is more visible
+            const baseOpacity = 0.08 + (z * 0.5); // 0.15 to 0.58 opacity
+            
+            // Line width scales with depth (z)
+            const lineWidth = 0.4 + (z * 1.5); // 0.55px (back) to 1.9px (front)
+            
             return {
+                z: z, // virtual depth coordinate
                 angle: angle,
                 d: d,
                 dStart: dStart,
@@ -77,34 +87,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 speedD: speedD,
                 baseAmplitude1: baseAmplitude1,
                 baseAmplitude2: baseAmplitude2,
-                baseAmplitude3: baseAmplitude3,
                 amplitude1: baseAmplitude1,
                 amplitude2: baseAmplitude2,
-                amplitude3: baseAmplitude3,
-                frequency1: 0.002 + Math.random() * 0.0015,   // Wavelength ~1200px to ~3000px (1-2 wide curves)
-                frequency2: 0.004 + Math.random() * 0.002,    // Wavelength ~800px to ~1500px
-                frequency3: 0.01,                             // Unused (amplitude is 0)
-                speed1: (0.0005 + Math.random() * 0.001) * (Math.random() < 0.5 ? 1 : -1),
-                speed2: (0.001 + Math.random() * 0.0015) * (Math.random() < 0.5 ? 1 : -1),
-                speed3: (0.002 + Math.random() * 0.003) * (Math.random() < 0.5 ? 1 : -1),
+                frequency1: 0.002 + Math.random() * 0.0015,
+                frequency2: 0.004 + Math.random() * 0.002,
+                // Wave morphing speed scales with depth (z)
+                speed1: (0.0005 + Math.random() * 0.001) * z * (Math.random() < 0.5 ? 1 : -1),
+                speed2: (0.001 + Math.random() * 0.0015) * z * (Math.random() < 0.5 ? 1 : -1),
                 phase1: Math.random() * 100,
                 phase2: Math.random() * 100,
-                phase3: Math.random() * 100,
                 colorRgb: color.rgb,
-                baseOpacity: 0.6 + Math.random() * 0.25,
-                lineWidth: 1.0 + Math.random() * 0.6,
-                
-                targetAmplitude1: baseAmplitude1,
-                targetAmplitude2: baseAmplitude2,
-                targetAmplitude3: baseAmplitude3
+                baseOpacity: baseOpacity,
+                lineWidth: lineWidth
             };
         }
 
         // Initialize active wave set (distributed on screen initially)
         function initWaves() {
             waves = [];
-            // Maintain 6 active waves flowing simultaneously
-            for (let i = 0; i < 6; i++) {
+            // Maintain 7 active waves for rich depth complexity
+            for (let i = 0; i < 7; i++) {
                 waves.push(createRandomWave(true));
             }
         }
@@ -116,23 +118,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const cosT = Math.cos(wave.angle);
             const sinT = Math.sin(wave.angle);
             
-            // 1. Advance phases at constant, smooth speeds for stable, organic wave morphing
+            // 1. Advance phases
             wave.phase1 += wave.speed1;
             wave.phase2 += wave.speed2;
-            wave.phase3 += wave.speed3;
 
-            // 2. Amplitudes remain fixed and stable at their base values during their stay on screen
-            wave.amplitude1 = wave.baseAmplitude1;
-            wave.amplitude2 = wave.baseAmplitude2;
-            wave.amplitude3 = wave.baseAmplitude3;
-
-            // 3. Calculate opacity based on proximity to entry/exit boundaries (fade in/out smoothly)
+            // 2. Calculate boundary fade opacity
             const totalDist = Math.abs(wave.dEnd - wave.dStart);
             const distFromStart = Math.abs(wave.d - wave.dStart);
             const distToEnd = Math.abs(wave.d - wave.dEnd);
             
             let boundaryOpacity = 1.0;
-            const fadeThreshold = totalDist * 0.15; // 15% travel distance fade zones
+            const fadeThreshold = totalDist * 0.15;
             
             if (distFromStart < fadeThreshold) {
                 boundaryOpacity = distFromStart / fadeThreshold;
@@ -142,12 +138,24 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const finalOpacity = boundaryOpacity * wave.baseOpacity;
 
-            // 4. Draw fill area closed to offset boundary
-            const L = Math.sqrt(w * w + h * h) * 0.7; // length along baseline covering viewport
+            // 3. Setup drop shadow for 3D depth separation (only for middle/foreground waves)
+            if (wave.z > 0.4) {
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
+                ctx.shadowBlur = 12 * wave.z;
+                ctx.shadowOffsetY = 6 * wave.z;
+                ctx.shadowOffsetX = -2 * wave.z;
+            } else {
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetY = 0;
+                ctx.shadowOffsetX = 0;
+            }
+
+            // 4. Draw fill area
+            const L = Math.sqrt(w * w + h * h) * 0.7;
             const step = 8;
             
             ctx.beginPath();
-            // Start of polygon boundary
             let startGx = w / 2 - L * cosT - wave.d * sinT;
             let startGy = h / 2 - L * sinT + wave.d * cosT;
             ctx.moveTo(startGx, startGy);
@@ -156,19 +164,18 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let u = -L; u <= L; u += step) {
                 let sin1 = Math.sin(u * wave.frequency1 + wave.phase1) * wave.amplitude1;
                 let sin2 = Math.cos(u * wave.frequency2 + wave.phase2) * wave.amplitude2;
-                let sin3 = Math.sin(u * wave.frequency3 + wave.phase3) * wave.amplitude3;
-                let v = sin1 + sin2 + sin3;
+                let v = sin1 + sin2;
 
                 let gx = w / 2 + u * cosT - (wave.d + v) * sinT;
                 let gy = h / 2 + u * sinT + (wave.d + v) * cosT;
                 ctx.lineTo(gx, gy);
             }
 
-            // Close polygon to the offset boundary (150px perpendicular)
-            let endOffsetGx = w / 2 + L * cosT - (wave.d + 150) * sinT;
-            let endOffsetGy = h / 2 + L * sinT + (wave.d + 150) * cosT;
-            let startOffsetGx = w / 2 - L * cosT - (wave.d + 150) * sinT;
-            let startOffsetGy = h / 2 - L * sinT + (wave.d + 150) * cosT;
+            // Close polygon to the offset boundary (120px perpendicular)
+            let endOffsetGx = w / 2 + L * cosT - (wave.d + 120) * sinT;
+            let endOffsetGy = h / 2 + L * sinT + (wave.d + 120) * cosT;
+            let startOffsetGx = w / 2 - L * cosT - (wave.d + 120) * sinT;
+            let startOffsetGy = h / 2 - L * sinT + (wave.d + 120) * cosT;
             
             ctx.lineTo(endOffsetGx, endOffsetGy);
             ctx.lineTo(startOffsetGx, startOffsetGy);
@@ -178,8 +185,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const gradient = ctx.createLinearGradient(
                 w / 2 - wave.d * sinT,
                 h / 2 + wave.d * cosT,
-                w / 2 - (wave.d + 150) * sinT,
-                h / 2 + (wave.d + 150) * cosT
+                w / 2 - (wave.d + 120) * sinT,
+                h / 2 + (wave.d + 120) * cosT
             );
             gradient.addColorStop(0, `rgba(${wave.colorRgb}, ${finalOpacity * 0.12})`);
             gradient.addColorStop(1, `rgba(${wave.colorRgb}, 0.00)`);
@@ -192,8 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let u = -L; u <= L; u += step) {
                 let sin1 = Math.sin(u * wave.frequency1 + wave.phase1) * wave.amplitude1;
                 let sin2 = Math.cos(u * wave.frequency2 + wave.phase2) * wave.amplitude2;
-                let sin3 = Math.sin(u * wave.frequency3 + wave.phase3) * wave.amplitude3;
-                let v = sin1 + sin2 + sin3;
+                let v = sin1 + sin2;
 
                 let gx = w / 2 + u * cosT - (wave.d + v) * sinT;
                 let gy = h / 2 + u * sinT + (wave.d + v) * cosT;
@@ -208,15 +214,22 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.strokeStyle = `rgba(${wave.colorRgb}, ${finalOpacity * 0.85})`;
             ctx.lineWidth = wave.lineWidth;
             ctx.stroke();
+
+            // Reset shadows to not affect other drawings
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetY = 0;
+            ctx.shadowOffsetX = 0;
         }
 
-        // Animation Loop with lifecycle management (replacing dead waves)
+        // Animation Loop with Z-Sorting lifecycle management
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
             // Set screen blend mode for glowing overlays
             ctx.globalCompositeOperation = 'screen';
             
+            // Update waves positions and filter dead ones
             for (let i = waves.length - 1; i >= 0; i--) {
                 let wave = waves[i];
                 
@@ -230,9 +243,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (isDead) {
                     // Spawn a fresh off-screen wave to replace it
                     waves[i] = createRandomWave(false);
-                } else {
-                    drawWave(wave);
                 }
+            }
+            
+            // 3D Z-sorting: Sort waves by z coordinate (draw lowest z first)
+            waves.sort((a, b) => a.z - b.z);
+            
+            // Draw waves in sorted order
+            for (let i = 0; i < waves.length; i++) {
+                drawWave(waves[i]);
             }
             
             ctx.globalCompositeOperation = 'source-over';
