@@ -1,4 +1,4 @@
-/* El estilo del sitio se gestiona en su totalidad mediante Tailwind CSS y estos estilos personalizados */
+/* custom layout styling (tailwind compiled separately) */
 
 body {
     font-family: 'Inter', sans-serif;
@@ -8,6 +8,7 @@ h1, h2 {
     font-family: 'Outfit', sans-serif;
 }
 #logo-img {
+    /* override gpu rendering flags for macOS retina scaling artifacts */
     transform: translateZ(0);
     backface-visibility: hidden;
     will-change: transform;
@@ -16,7 +17,7 @@ h1, h2 {
     -webkit-transform: translate3d(0, 0, 0);
 }
 
-/* Floating background highlight orbs */
+/* bg highlights floating animations */
 @keyframes float {
     0% { transform: translateY(0px) rotate(0deg); }
     50% { transform: translateY(-12px) rotate(180deg); }

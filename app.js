@@ -1,18 +1,15 @@
-/* ==========================================================================
-   QRT SOLUTIONS - COMING SOON MACOS DYNAMIC WAVES
-   ========================================================================== */
+// QRT Solutions - Coming Soon v2.0
+// Background waves canvas & launch timer logic
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // ==========================================================================
-    // 1. MACOS-STYLE DYNAMIC WAVES ENGINE WITH 3D DEPTH & RETINA HD SCALING
-    // ==========================================================================
+    // Canvas waves logic (DPR scale fix included)
     const canvas = document.getElementById('particles-canvas');
     if (canvas) {
         const ctx = canvas.getContext('2d');
         let waves = [];
 
-        // Logical layout dimensions (CSS pixels)
+        // Screen dimensions (logical viewport pixels)
         let logicalWidth = window.innerWidth;
         let logicalHeight = window.innerHeight;
 
@@ -21,52 +18,49 @@ document.addEventListener('DOMContentLoaded', () => {
             logicalWidth = window.innerWidth;
             logicalHeight = window.innerHeight;
             
-            // Scale physical canvas pixels for high-density (Retina/4K) displays
+            // Adjust canvas resolution for Retina / 4K monitors
             canvas.width = logicalWidth * dpr;
             canvas.height = logicalHeight * dpr;
             
-            // Constrain visual size using CSS
+            // Limit CSS dimensions
             canvas.style.width = logicalWidth + 'px';
             canvas.style.height = logicalHeight + 'px';
             
-            // Normalize coordinate system and scale context
             ctx.setTransform(1, 0, 0, 1, 0, 0);
             ctx.scale(dpr, dpr);
             
             initWaves();
         }
 
-        // Create a new randomized wave crossing the screen at horizontal, vertical, or diagonal angles
+        // Generate a wave structure with randomized depth & angles
         function createRandomWave(onScreenInit = false) {
             const w = logicalWidth;
             const h = logicalHeight;
             const R = Math.sqrt(w * w + h * h) / 2;
             
-            // 3D Depth Factor: z ranges from 0.15 (deep background) to 1.0 (foreground)
+            // z-axis factor for 3D fake depth (0.15 to 1.0)
             const z = 0.15 + Math.random() * 0.85;
             
-            // Choose a random angle
             const angles = [
-                0,                  // Horizontal (moving down/up)
-                Math.PI,            // Horizontal opposite
-                Math.PI / 2,        // Vertical (moving right/left)
-                -Math.PI / 2,       // Vertical opposite
-                Math.PI / 4,        // Diagonal 45 deg
-                -Math.PI / 4,       // Diagonal -45 deg
-                Math.PI * 0.15,     // Soft diagonal
+                0,                  // horizontal
+                Math.PI,            
+                Math.PI / 2,        // vertical
+                -Math.PI / 2,       
+                Math.PI / 4,        // diagonal
+                -Math.PI / 4,       
+                Math.PI * 0.15,     // subtle slant
                 -Math.PI * 0.15
             ];
             const angle = angles[Math.floor(Math.random() * angles.length)];
             
-            // Travel range perpendicular to the wave orientation
             const dStart = -R - 180;
             const dEnd = R + 180;
             
-            // Slide speed: scale with depth (z) so distant waves move slower
+            // base movement speed (deep waves drift slower)
             const baseSpeed = 0.2 + Math.random() * 0.45;
+            // const baseSpeed = 0.6; // debug: too fast for bg
             const speedD = baseSpeed * z * (Math.random() < 0.5 ? 1 : -1);
             
-            // Starting position: distribute randomly if initial build, otherwise place off-screen
             let d;
             if (onScreenInit) {
                 d = dStart + Math.random() * (dEnd - dStart);
@@ -74,30 +68,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 d = speedD > 0 ? dStart : dEnd;
             }
             
-            // Wave amplitudes scale with depth (z) to make background waves flatter
-            const baseAmplitude1 = (15 + z * 35) + Math.random() * 10; // 15px (back) up to 60px (front)
-            const baseAmplitude2 = (1 + z * 3);                        // secondary micro-curves
+            // amplitude scales with depth mapping
+            const baseAmplitude1 = (15 + z * 35) + Math.random() * 10;
+            const baseAmplitude2 = (1 + z * 3);
             
-            // Select one of the corporate pastel colors
+            // brand color palette
             const colors = [
-                { rgb: '99, 102, 241' },   // Indigo
-                { rgb: '139, 92, 246' },   // Violet
-                { rgb: '6, 182, 212' },    // Cyan
-                { rgb: '16, 185, 129' },   // Mint
-                { rgb: '59, 130, 246' },   // Blue (Standard)
-                { rgb: '96, 165, 250' },   // Light Sky Blue
-                { rgb: '147, 197, 253' }   // Soft Pastel Blue
+                { rgb: '99, 102, 241' },   // indigo
+                { rgb: '139, 92, 246' },   // violet
+                { rgb: '6, 182, 212' },    // cyan
+                { rgb: '16, 185, 129' },   // mint
+                { rgb: '59, 130, 246' },   
+                { rgb: '96, 165, 250' },   
+                { rgb: '147, 197, 253' }   
             ];
             const color = colors[Math.floor(Math.random() * colors.length)];
             
-            // Opacity scales with depth (z): background is faint, foreground is more visible
-            const baseOpacity = 0.08 + (z * 0.5); // 0.15 to 0.58 opacity
-            
-            // Line width scales with depth (z)
-            const lineWidth = 0.4 + (z * 1.5); // 0.55px (back) to 1.9px (front)
+            // alpha based on depth layer
+            const baseOpacity = 0.08 + (z * 0.5);
+            const lineWidth = 0.4 + (z * 1.5);
             
             return {
-                z: z, // virtual depth coordinate
+                z: z, 
                 angle: angle,
                 d: d,
                 dStart: dStart,
@@ -109,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 amplitude2: baseAmplitude2,
                 frequency1: 0.002 + Math.random() * 0.0015,
                 frequency2: 0.004 + Math.random() * 0.002,
-                // Wave morphing speed scales with depth (z)
                 speed1: (0.0005 + Math.random() * 0.001) * z * (Math.random() < 0.5 ? 1 : -1),
                 speed2: (0.001 + Math.random() * 0.0015) * z * (Math.random() < 0.5 ? 1 : -1),
                 phase1: Math.random() * 100,
@@ -120,27 +111,28 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         }
 
-        // Initialize active wave set (distributed on screen initially)
+        // populate screen waves
         function initWaves() {
             waves = [];
-            // Maintain 7 active waves for rich depth complexity
+            // 7 waves is optimal for depth layering without choking mobile CPUs
             for (let i = 0; i < 7; i++) {
                 waves.push(createRandomWave(true));
             }
         }
 
-        // Draw a single wave layer at its specific rotation, translation, and morphing state
+        // render single wave layer
         function drawWave(wave) {
             const w = logicalWidth;
             const h = logicalHeight;
             const cosT = Math.cos(wave.angle);
             const sinT = Math.sin(wave.angle);
             
-            // 1. Advance phases
-            wave.phase1 += wave.speed1;
-            wave.phase2 += wave.speed2;
+            // Analog speed drift (non-linear phase steps for organic look)
+            const driftFactor = 1 + Math.sin(Date.now() * 0.00015) * 0.12;
+            wave.phase1 += wave.speed1 * driftFactor;
+            wave.phase2 += wave.speed2 * driftFactor;
 
-            // 2. Calculate boundary fade opacity
+            // boundary limits calculations
             const totalDist = Math.abs(wave.dEnd - wave.dStart);
             const distFromStart = Math.abs(wave.d - wave.dStart);
             const distToEnd = Math.abs(wave.d - wave.dEnd);
@@ -156,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const finalOpacity = boundaryOpacity * wave.baseOpacity;
 
-            // 3. Setup drop shadow for 3D depth separation (only for middle/foreground waves)
+            // 3D shadow falloff
             if (wave.z > 0.4) {
                 ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
                 ctx.shadowBlur = 12 * wave.z;
@@ -169,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.shadowOffsetX = 0;
             }
 
-            // 4. Draw fill area
+            // path drawing
             const L = Math.sqrt(w * w + h * h) * 0.7;
             const step = 8;
             
@@ -178,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let startGy = h / 2 - L * sinT + wave.d * cosT;
             ctx.moveTo(startGx, startGy);
 
-            // Draw wave profile
+            // draw points
             for (let u = -L; u <= L; u += step) {
                 let sin1 = Math.sin(u * wave.frequency1 + wave.phase1) * wave.amplitude1;
                 let sin2 = Math.cos(u * wave.frequency2 + wave.phase2) * wave.amplitude2;
@@ -189,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.lineTo(gx, gy);
             }
 
-            // Close polygon to the offset boundary (120px perpendicular)
+            // close polygon boundary
             let endOffsetGx = w / 2 + L * cosT - (wave.d + 120) * sinT;
             let endOffsetGy = h / 2 + L * sinT + (wave.d + 120) * cosT;
             let startOffsetGx = w / 2 - L * cosT - (wave.d + 120) * sinT;
@@ -199,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.lineTo(startOffsetGx, startOffsetGy);
             ctx.closePath();
 
-            // Fill with perpendicular linear gradient
+            // linear gradient fill
             const gradient = ctx.createLinearGradient(
                 w / 2 - wave.d * sinT,
                 h / 2 + wave.d * cosT,
@@ -211,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.fillStyle = gradient;
             ctx.fill();
 
-            // 5. Draw top ridge stroke with high-definition linear gradient
+            // top stroke
             ctx.beginPath();
             let first = true;
             for (let u = -L; u <= L; u += step) {
@@ -230,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             
-            // Create a stroke gradient across the screen to fade edges beautifully
+            // fade stroke ends dynamically
             const strokeGradient = ctx.createLinearGradient(0, 0, w, h);
             strokeGradient.addColorStop(0, `rgba(${wave.colorRgb}, ${finalOpacity * 0.15})`);
             strokeGradient.addColorStop(0.5, `rgba(${wave.colorRgb}, ${finalOpacity * 0.85})`);
@@ -240,41 +232,37 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.lineWidth = wave.lineWidth;
             ctx.stroke();
 
-            // Reset shadows to not affect other drawings
+            // reset shadow state
             ctx.shadowColor = 'transparent';
             ctx.shadowBlur = 0;
             ctx.shadowOffsetY = 0;
             ctx.shadowOffsetX = 0;
         }
 
-        // Animation Loop with Z-Sorting lifecycle management
+        // main loop
         function animate() {
             ctx.clearRect(0, 0, logicalWidth, logicalHeight);
             
-            // Set screen blend mode for glowing overlays
+            // blend mode
             ctx.globalCompositeOperation = 'screen';
             
-            // Update waves positions and filter dead ones
+            // updates and recycling
             for (let i = waves.length - 1; i >= 0; i--) {
                 let wave = waves[i];
-                
-                // Move wave perpendicularly
                 wave.d += wave.speedD;
                 
-                // Check if wave is fully off-screen (dead)
                 const isDead = (wave.speedD > 0 && wave.d > wave.dEnd) ||
                                (wave.speedD < 0 && wave.d < wave.dStart);
                                
                 if (isDead) {
-                    // Spawn a fresh off-screen wave to replace it
                     waves[i] = createRandomWave(false);
                 }
             }
             
-            // 3D Z-sorting: Sort waves by z coordinate (draw lowest z first)
+            // sort by depth layering (z-sorting)
             waves.sort((a, b) => a.z - b.z);
             
-            // Draw waves in sorted order
+            // draw
             for (let i = 0; i < waves.length; i++) {
                 drawWave(waves[i]);
             }
@@ -283,17 +271,13 @@ document.addEventListener('DOMContentLoaded', () => {
             requestAnimationFrame(animate);
         }
 
-
-
-        // Initialize and Run
+        // listeners
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
         animate();
     }
 
-    // ==========================================================================
-    // 2. COUNTDOWN TIMER (TARGET: JUNE 30, 2026)
-    // ==========================================================================
+    // Target Launch: June 30, 2026
     const launchDate = new Date('June 30, 2026 09:00:00').getTime();
     
     const daysEl = document.getElementById('timer-days');
@@ -326,6 +310,5 @@ document.addEventListener('DOMContentLoaded', () => {
     
     setInterval(updateCountdown, 1000);
     updateCountdown();
-
 
 });
